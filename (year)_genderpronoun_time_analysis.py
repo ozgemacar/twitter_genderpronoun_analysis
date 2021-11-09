@@ -19,31 +19,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import collections
 
-from google.colab import drive
-drive.mount('/content/gdrive')
 
-SAMPLE_FILE_1 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_1.json"
-SAMPLE_FILE_2 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_2.json"
-SAMPLE_FILE_3 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_3.json"
-SAMPLE_FILE_4 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_4.json"
-SAMPLE_FILE_5 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_5.json"
-SAMPLE_FILE_6 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_6.json"
-SAMPLE_FILE_7 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_7.json"
-SAMPLE_FILE_8 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_8.json"
-SAMPLE_FILE_9 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_9.json"
-SAMPLE_FILE_10 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_10.json"
-SAMPLE_FILE_11 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_11.json"
-SAMPLE_FILE_12 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_12.json"
-SAMPLE_FILE_13 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_13.json"
-SAMPLE_FILE_14 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_14.json"
-SAMPLE_FILE_15 = "/content/gdrive/MyDrive/Research/GenderPronoun/sample_15.json"
+SAMPLE_FILE = "ENTER THE PATH OF YOUR SAMPLE FILE"
 
-a = datetime.fromtimestamp(1326394000)
-month = str(a)[5:7]
-print(month)
 
-#YEAR
-#Just to see how many unique ids are there in the sample file.
+
+#This part shows how many unique ids there are in the sample file.
 
 id_year_dict = dict()
 with open(SAMPLE_FILE_15, "r") as sample:
@@ -55,8 +36,9 @@ with open(SAMPLE_FILE_15, "r") as sample:
 
 print("The number of unique ids in the sample file", len(id_year_dict))
 
+#YEAR
 id_year = []
-with open(SAMPLE_FILE_15, "r") as sample:
+with open(SAMPLE_FILE, "r") as sample:
   for line in sample:
     dpoint = json.loads(line)
     dt_object = datetime.fromtimestamp(dpoint["current_tweet_timestamp"])
@@ -68,9 +50,7 @@ sorted_id_year = sorted(id_year, key=lambda x: x[1])
 
 #sorts id_year dict ascending - result is list of tuples.
 
-print(sorted_id_year)
-print(len(sorted_id_year))
-
+#Categorizes ids according to their creation year.
 ids_2011 = list()
 ids_2012 = list()
 ids_2013 = list()
@@ -115,6 +95,7 @@ data_ze = []
 data_xe = []
 data_sie = []
 
+#Regex codes to detect pronouns in the text and descriptions.
 she_regex = r"(\sshe\sher\shers\s)|(\sshe\sher\s)"
 he_regex = r"(\she\shim\shis\s)|(\she\shim\s)"
 they_regex = r"(\sthey\sthem\s)|(\sthey\sthem\stheirs\s)"
@@ -131,6 +112,7 @@ def check_regex(regex_type, line):
   else:
     return True
 
+#The lists that keep the unique ids' that include corresponding pronound in their description field.
 unique_she = []
 unique_he = []
 unique_they = []
@@ -247,8 +229,8 @@ for year_list in ids_list:
         continue
     data_sie.append((str(year_list[0][1]), count))
 
-data_she
 
+#This part creates a table by using Pandas to indicate the total number of each pronoun usage for each year. 
 count_table = pd.DataFrame(data_she, columns=['year', 'she'])
 count_table.insert(2, "he", [data_he[0][1], data_he[1][1], data_he[2][1], data_he[3][1], data_he[4][1], data_he[5][1], data_he[6][1], data_he[7][1], data_he[8][1], data_he[9][1]], True)
 count_table.insert(3, "they", [data_they[0][1], data_they[1][1], data_they[2][1], data_they[3][1], data_they[4][1], data_they[5][1], data_they[6][1], data_they[7][1], data_they[8][1], data_they[9][1]], True)
@@ -257,9 +239,9 @@ count_table.insert(5, "xe", [data_xe[0][1], data_xe[1][1], data_xe[2][1], data_x
 count_table.insert(6, "sie", [data_sie[0][1], data_sie[1][1], data_sie[2][1], data_sie[3][1], data_sie[4][1], data_sie[5][1], data_sie[6][1], data_sie[7][1], data_sie[8][1], data_sie[9][1]], True)
 count_table['Total by Year'] = count_table.sum(axis=1)
 print(count_table)
-print()
 print("The sum of the total number of users that use pronoun in their description for each year", sum(count_table["Total by Year"]))
 
+#The scatter plot of the total number of unique ids for each year for each pronoun. Each line in the chart signifies a pronoun as is stated in the legend. 
 x_she_val = [i[0] for i in data_she]
 y_she_val = [i[1] for i in data_she]
 
