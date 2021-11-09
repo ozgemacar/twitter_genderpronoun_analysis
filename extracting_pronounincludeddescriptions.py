@@ -7,14 +7,14 @@ Original file is located at
     https://colab.research.google.com/drive/17iip3X2__UiwLJjVMwKn_0WYRQRJq_rM
 """
 
-import glob
-import gzip
+import glob  #If you want to go through more than one file.
+import gzip  #If you will use zip files. 
 import json
 import re
 from collections import Counter
 
-from google.colab import drive
-drive.mount('/content/gdrive')
+DATAFILE = "ENTER YOUR FILEPATH HERE"  #It includes the user objects from Twitter line by line.
+NEWFILENAME = "THE FILE NAME FOR YOUR OUTFILE.json"
 
 def check_pronoun(text):
     regex = r"(\sshe\sher\shers\s)|(\sshe\sher\s)|(\she\shim\shis\s)|(\she\shim\s)|(\sthey\sthem\s)|(\sthey\sthem\stheirs\s)|(\sze\szir\szirs\s)|(\sze\szir\szis\s)|(\sze\szir\s)|(\sxe\sxem\sxir\s)|(\sxe\sxem\sxirs\s)|(\sxe\sxem\s)|(\ssie\shir\shirs\s)|(\ssie\shir\s)"
@@ -28,9 +28,9 @@ pronoun_status = {}
 
 #regex updated version
 
-all_files = glob.glob("/content/gdrive/MyDrive/Research/GenderPronoun/Data/All in one/*.jsons.gz")
+all_files = glob.glob(DATAFILE/*.jsons.gz") #Use glob library if you have more than one file to go through. Otherwise, simply use open() function.
 
-with open("alldata_withpronoun_2011-2020.json", "w") as outfile:
+with open(NEWFILENAME, "w") as outfile:
   for file in all_files:
       with gzip.open(file, 'rt') as fl:
           for line in fl:
@@ -49,11 +49,13 @@ with open("alldata_withpronoun_2011-2020.json", "w") as outfile:
                 json.dump(pronoun_status, outfile)
                 outfile.write('\n')
 
+#You can use either the above code or the below, it will construct differently each line according to your needs.
+                      
 #to obtain data file with tweet information
 
-all_files = glob.glob("/content/gdrive/MyDrive/Research/GenderPronoun/Data/All in one/*.jsons.gz")
+all_files = glob.glob(DATAFILE/*.jsons.gz")
 
-with open("tweetincluded_alldata_withpronoun_2011-2020.json", "w") as outfile:
+with open(NEWFILENAME, "w") as outfile:
   for file in all_files:
       with gzip.open(file, 'rt') as fl:
           for line in fl:
